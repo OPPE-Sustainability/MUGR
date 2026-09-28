@@ -1,0 +1,236 @@
+
+
+===== FILE: index.html =====
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Area & Urban Climate Dashboard</title>
+    <!-- นำเข้า Google Font: Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- นำเข้า Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --primary-color: #27ae60;
+            --primary-light: #e8f8f5;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px -5px rgba(39, 174, 96, 0.15), 0 8px 10px -6px rgba(39, 174, 96, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* Main Content Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #edf2f7;
+            padding-bottom: 12px;
+        }
+
+        .card-header h2 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 450px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .chart-wrapper { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- ส่วนหัวเว็บ -->
+        <header>
+            <div class="header-title">
+                <h1>MU Green Ranking</h1>
+            </div>
+            <div class="status-badge">
+                <span class="status-dot"></span> ระบบอัพเดทตามช่วงเวลา
+            </div>
+        </header>
+
+        <!-- ส่วนแสดงผลหลัก -->
+        <div class="grid-container">
+            <!-- Dropdown เลือกหน่วยงาน -->
+            <div>
+                <div style="margin-bottom: 15px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <label for="yearSelect" style="font-size: 0.9rem; font-weight: 500; margin-right: 8px;">MU Green Ranking:</label>
+                    <select id="yearSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Prompt', sans-serif; font-size: 0.9rem; background: #fff; cursor: pointer;">
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                    </select>
+                    <label for="unitSelect" style="font-size: 0.9rem; font-weight: 500; margin-right: 8px;">เลือกหน่วยงาน:</label>
+                    <select id="unitSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Prompt', sans-serif; font-size: 0.9rem; background: #fff; cursor: pointer;"></select>
+                </div>
+            </div>
+
+            <!-- การ์ดแสดงผลรวม (Gauge Meter & Radar) -->
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <h2 id="pieTitle">สัดส่วนรายละเอียดรายหน่วยงาน</h2>
+                </div>
+
+                <!-- แผงแสดงมาตรวัดสไตล์ Credit Score Gauge Meter -->
+                <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;">Overall Percentage & Rating</div>
+                    
+                    <div style="position: relative; width: 100%; max-width: 320px; height: 160px; margin-bottom: 10px;">
+                        <canvas id="gaugeChart"></canvas>
+                        <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); text-align: center;">
+                            <div id="overallScoreText" style="font-size: 2rem; font-weight: 700; color: #ffffff; line-height: 1.1;">0.00%</div>
+                            <div style="margin-top: 4px;">
+                                <span id="ratingBadge" style="display: inline-block; padding: 3px 14px; border-radius: 20px; color: #fff; font-size: 0.85rem; font-weight: 600; background: #94a3b8; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ตารางแสดงคะแนนย่อยทั้ง 7 หมวด -->
+                <div style="margin-bottom: 25px; overflow-x: auto;">
+                    <table id="summaryTable" style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: center;">
+                        <thead>
+                            <tr style="background-color: #f1f5f9; color: #2c3e50;">
+                                <th style="padding: 8px; border: 1px solid #e2e8f0;">หมวด 1 (องค์กร)</th>
+                                <th style="padding: 8px; border: 1px solid #e2e8f0;">หมวด 2 (วัตถุดิบ)</th>
+                                <th style="padding: 8px; border: 1px solid #e2e8f0;">หมวด 3 (พลังงาน)</th>
+                                <th style="padding: 8px; border: 1px solid #e2e8f0;">หมวด 4 (น้ำ)</th>
+                                <th style="padding: 8px; border: 1px solid #e2e8f0;">หมวด 5 (กากของเสีย)</th>
+                                <th style="padding: 8px; border: 1px solid #e2e8f0;">หมวด 6 (อาคาร)</th>
+                                <th style="padding: 8px; border: 1px solid #e2e8f0;">หมวด 7 (GHG)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="score1" style="padding: 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #27ae60;">-</td>
+                                <td id="score2" style="padding: 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #3498db;">-</td>
+                                <td id="score3" style="padding: 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #d97706;">-</td>
+                                <td id="score4" style="padding: 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #e74c3c;">-</td>
+                                <td id="score5" style="padding: 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #9b59b6;">-</td>
+                                <td id="score6" style="padding: 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #e67e22;">-</td>
+                                <td id="score7" style="padding: 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1abc9c;">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="chart-wrapper">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>กองกายภาพและสิ่งแวดล้อม มหิดล</p>
+        </footer>
+    </div>
+
+    <!-- เรียกใช้ไฟล์ JavaScript แยกต่างหาก -->
+    <script src="script.js"></script>
+</body>
+</html>
