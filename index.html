@@ -4,7 +4,6 @@
 
 <head>
 
-```
 <meta charset="UTF-8">
 
 <meta
@@ -39,49 +38,30 @@
        ========================================================= */
 
     :root {
-
-        --bg-color: #f4f7f6;
-
+        --bg-color: #f8fafc;
         --card-bg: #ffffff;
-
-        --text-main: #1e293b;
-
+        --text-main: #0f172a;
+        --text-secondary: #334155;
         --text-muted: #64748b;
+        --text-subtle: #94a3b8;
 
-        --primary-color: #16a34a;
-
-        --primary-dark: #047857;
-
+        /* Brand Primary */
+        --primary-color: #10b981;
+        --primary-dark: #059669;
         --primary-light: #ecfdf5;
-
+        --primary-border: #a7f3d0;
         --border-color: #e2e8f0;
 
-        --blue: #0ea5e9;
+        /* Rating System Unified Colors */
+        --rating-best: #10b981;
+        --rating-good: #0ea5e9;
+        --rating-moderate: #f59e0b;
+        --rating-limited: #f97316;
+        --rating-unacceptable: #ef4444;
 
-        --teal: #14b8a6;
-
-        --shadow:
-            0 4px 12px rgba(15, 23, 42, 0.06);
-
-        --shadow-lg:
-            0 12px 30px rgba(15, 23, 42, 0.10);
-
-        --gradient-main:
-            linear-gradient(
-                135deg,
-                #4ade80 0%,
-                #10b981 42%,
-                #0ea5a4 72%,
-                #0ea5e9 100%
-            );
-
-        --gradient-dark:
-            linear-gradient(
-                135deg,
-                #064e3b 0%,
-                #047857 45%,
-                #0891b2 100%
-            );
+        --shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+        --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.08);
+        --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.22);
     }
 
 
@@ -942,55 +922,90 @@
 
 
     /* =========================================================
-       PIE CHART
+       RADAR CHART (INTERACTIVE BOUNCE & EXPAND)
        ========================================================= */
 
     .pie-section {
-
-        padding-top: 20px;
-
-        border-top:
-            1px solid #edf2f7;
+        padding-top: 22px;
+        border-top: 1px solid #e2e8f0;
     }
-
 
     .pie-header {
-
         display: flex;
-
         justify-content: space-between;
-
         align-items: center;
-
-        margin-bottom: 10px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+        gap: 8px;
     }
-
 
     .pie-header h3 {
-
-        font-size: 0.92rem;
-
+        font-size: 0.95rem;
         font-weight: 600;
-
-        color: #334155;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-
-    .pie-header span {
-
-        font-size: 0.63rem;
-
-        color: #94a3b8;
+    .radar-card-interactive {
+        position: relative;
+        background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 68%), #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 18px 20px;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        cursor: pointer;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        overflow: visible;
     }
 
+    .radar-card-interactive:hover,
+    .radar-card-interactive.is-popped {
+        border-color: #a7f3d0;
+        box-shadow: 0 10px 28px -5px rgba(16, 185, 129, 0.12);
+    }
+
+    .radar-hint-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #a7f3d0;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.70rem;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
+
+    .radar-card-interactive:hover .radar-hint-badge,
+    .radar-card-interactive.is-popped .radar-hint-badge {
+        background: #10b981;
+        color: #ffffff;
+        border-color: #10b981;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
 
     .chart-wrapper {
-
         position: relative;
-
         width: 100%;
+        height: 430px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        height: 420px;
+    .chart-wrapper canvas {
+        transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform-origin: center center;
+        will-change: transform;
+    }
+
+    .radar-card-interactive:hover .chart-wrapper canvas,
+    .radar-card-interactive.is-popped .chart-wrapper canvas {
+        transform: scale(1.085);
     }
 
 
@@ -1365,14 +1380,60 @@
         }
     }
 
+    /* =========================================================
+       OVERALL SECTION & STACKED CHART
+       ========================================================= */
+
+    .overall-hero-card {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 50%, #f0fdfa 100%);
+        border: 1px solid #bbf7d0;
+        border-radius: 18px;
+        padding: 24px 28px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.08), 0 4px 6px -2px rgba(16, 185, 129, 0.03);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .overall-grid-layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 1fr) 1px minmax(360px, 1.4fr);
+        align-items: center;
+        gap: 32px;
+        width: 100%;
+    }
+
+    .rating-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        font-size: 0.70rem;
+        color: #64748b;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    @media (max-width: 900px) {
+        .overall-grid-layout {
+            grid-template-columns: 1fr !important;
+            gap: 28px !important;
+        }
+        .overall-v-divider {
+            display: none !important;
+        }
+    }
+
 </style>
-```
 
 </head>
 
 <body>
 
-```
 <div class="dashboard-container">
 
 
@@ -1381,21 +1442,16 @@
          ===================================================== -->
 
     <header>
-
-
         <div class="header-title">
-
-            <h1>
+            <h1 style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.55rem; font-weight: 700; letter-spacing: -0.5px;">
                 MU Green Ranking
             </h1>
-
-            <p>
-                Environmental Sustainability Dashboard
+            <p style="color: #64748b; font-size: 0.75rem; margin-top: 3px; font-weight: 400;">
+                Environmental Sustainability Dashboard • มหาวิทยาลัยมหิดล
             </p>
-
         </div>
 
-
+        </div>
     </header>
 
 
@@ -1518,378 +1574,176 @@
 <!-- =========================================================
      OVERALL PERFORMANCE
 ========================================================= -->
-<div style="
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    border-radius: 16px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: var(--shadow-lg);
-    position: relative;
-    overflow: hidden;
-">
-
-    <!-- Header -->
-    <div style="
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin-bottom: 20px;
-        text-align: center;
-    ">
-        Overall Percentage & Rating
-    </div>
-
-
-    <!-- =====================================================
-         GAUGE + SCORE TABLE
-    ====================================================== -->
-    <div style="
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 35px;
-        width: 100%;
-        flex-wrap: wrap;
-    ">
-
+<div class="overall-hero-card">
+    <div class="overall-grid-layout">
 
         <!-- =================================================
-             LEFT : GAUGE
+             LEFT : GAUGE BAR HERO (PRIMARY FOCUS)
         ================================================== -->
         <div style="
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            max-width: 320px;
-            height: 175px;
-            flex: 1 1 300px;
         ">
-
-            <canvas
-                id="gaugeChart"
-                style="
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                ">
-            </canvas>
-
-
-            <!-- Score Overlay -->
             <div style="
-                position: absolute;
-                bottom: 5px;
-                left: 50%;
-                transform: translateX(-50%);
-                text-align: center;
-                width: 100%;
-            ">
-
-                <div
-                    id="overallScoreText"
-                    style="
-                        font-size: 2rem;
-                        font-weight: 700;
-                        color: #ffffff;
-                        line-height: 1.1;
-                    "
-                >
-                    0.00%
-                </div>
-
-
-                <!-- Rating Badge -->
-                <div style="
-                    margin-top: 5px;
-                ">
-
-                    <span
-                        id="ratingBadge"
-                        style="
-                            display: inline-block;
-                            padding: 4px 16px;
-                            border-radius: 20px;
-                            color: #fff;
-                            font-size: 0.85rem;
-                            font-weight: 600;
-                            background: #94a3b8;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                        "
-                    >
-                        -
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- =================================================
-             RIGHT : SCORE RATING TABLE
-        ================================================== -->
-        <div style="
-            flex: 0 1 330px;
-            width: 100%;
-            min-width: 280px;
-        ">
-
-            <div style="
-                color: #cbd5e1;
-                font-size: 0.8rem;
+                font-size: 0.80rem;
                 font-weight: 600;
+                color: #065f46;
                 text-transform: uppercase;
-                letter-spacing: 1px;
-                margin-bottom: 10px;
+                letter-spacing: 1.5px;
+                margin-bottom: 12px;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                gap: 6px;
             ">
-                Performance Rating Scale
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+                Overall Percentage & Rating
             </div>
 
-
-            <!-- Table -->
+            <!-- Gauge Canvas Area -->
             <div style="
-                border: 1px solid rgba(255,255,255,0.10);
-                border-radius: 12px;
-                overflow: hidden;
-                background: rgba(255,255,255,0.04);
+                position: relative;
+                width: 100%;
+                max-width: 360px;
+                height: 185px;
+                margin: 0 auto;
             ">
+                <canvas id="gaugeChart" style="display: block; width: 100%; height: 100%;"></canvas>
 
-
-                <!-- Header -->
+                <!-- Score Overlay -->
                 <div style="
-                    display: grid;
-                    grid-template-columns: 100px 1fr;
-                    padding: 9px 14px;
-                    background: rgba(255,255,255,0.07);
-                    color: #94a3b8;
-                    font-size: 0.75rem;
-                    font-weight: 600;
+                    position: absolute;
+                    bottom: 6px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    text-align: center;
+                    width: 100%;
                 ">
-
-                    <div>
-                        SCORE
-                    </div>
-
-                    <div>
-                        RATING
-                    </div>
-
-                </div>
-
-
-                <!-- 0-19 -->
-                <div
-                    id="ratingRowUnacceptable"
-                    style="
-                        display: grid;
-                        grid-template-columns: 100px 1fr;
-                        align-items: center;
-                        padding: 9px 14px;
-                        color: #cbd5e1;
-                        font-size: 0.82rem;
-                        border-top: 1px solid rgba(255,255,255,0.06);
-                        transition: all 0.2s ease;
-                    "
-                >
-
-                    <div>
-                        0–19%
-                    </div>
-
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
+                    <div id="overallScoreText" style="
+                        font-size: 2.5rem;
+                        font-weight: 700;
+                        color: #0f172a;
+                        line-height: 1;
+                        letter-spacing: -1.2px;
                     ">
-
-                        <span style="
-                            width: 9px;
-                            height: 9px;
-                            border-radius: 50%;
-                            background: #c0392b;
-                        "></span>
-
-                        <strong>
-                            Unacceptable
-                        </strong>
-
+                        0.00%
                     </div>
 
+                    <div style="margin-top: 6px;">
+                        <span id="ratingBadge" style="
+                            display: inline-block;
+                            padding: 4px 20px;
+                            border-radius: 20px;
+                            color: #ffffff;
+                            font-size: 0.82rem;
+                            font-weight: 600;
+                            background: #10b981;
+                            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+                            letter-spacing: 0.5px;
+                        ">
+                            -
+                        </span>
+                    </div>
                 </div>
-
-
-                <!-- 20-39 -->
-                <div
-                    id="ratingRowLimited"
-                    style="
-                        display: grid;
-                        grid-template-columns: 100px 1fr;
-                        align-items: center;
-                        padding: 9px 14px;
-                        color: #cbd5e1;
-                        font-size: 0.82rem;
-                        border-top: 1px solid rgba(255,255,255,0.06);
-                        transition: all 0.2s ease;
-                    "
-                >
-
-                    <div>
-                        20–39%
-                    </div>
-
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                    ">
-
-                        <span style="
-                            width: 9px;
-                            height: 9px;
-                            border-radius: 50%;
-                            background: #d35400;
-                        "></span>
-
-                        <strong>
-                            Limited
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <!-- 40-59 -->
-                <div
-                    id="ratingRowModerate"
-                    style="
-                        display: grid;
-                        grid-template-columns: 100px 1fr;
-                        align-items: center;
-                        padding: 9px 14px;
-                        color: #cbd5e1;
-                        font-size: 0.82rem;
-                        border-top: 1px solid rgba(255,255,255,0.06);
-                        transition: all 0.2s ease;
-                    "
-                >
-
-                    <div>
-                        40–59%
-                    </div>
-
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                    ">
-
-                        <span style="
-                            width: 9px;
-                            height: 9px;
-                            border-radius: 50%;
-                            background: #f39c12;
-                        "></span>
-
-                        <strong>
-                            Moderate
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <!-- 60-79 -->
-                <div
-                    id="ratingRowGood"
-                    style="
-                        display: grid;
-                        grid-template-columns: 100px 1fr;
-                        align-items: center;
-                        padding: 9px 14px;
-                        color: #cbd5e1;
-                        font-size: 0.82rem;
-                        border-top: 1px solid rgba(255,255,255,0.06);
-                        transition: all 0.2s ease;
-                    "
-                >
-
-                    <div>
-                        60–79%
-                    </div>
-
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                    ">
-
-                        <span style="
-                            width: 9px;
-                            height: 9px;
-                            border-radius: 50%;
-                            background: #2980b9;
-                        "></span>
-
-                        <strong>
-                            Good
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <!-- 80-100 -->
-                <div
-                    id="ratingRowBest"
-                    style="
-                        display: grid;
-                        grid-template-columns: 100px 1fr;
-                        align-items: center;
-                        padding: 9px 14px;
-                        color: #cbd5e1;
-                        font-size: 0.82rem;
-                        border-top: 1px solid rgba(255,255,255,0.06);
-                        transition: all 0.2s ease;
-                    "
-                >
-
-                    <div>
-                        80–100%
-                    </div>
-
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                    ">
-
-                        <span style="
-                            width: 9px;
-                            height: 9px;
-                            border-radius: 50%;
-                            background: #27ae60;
-                        "></span>
-
-                        <strong>
-                            Best
-                        </strong>
-
-                    </div>
-
-                </div>
-
             </div>
 
+            <!-- Performance Rating Scale Pills (Under Gauge) -->
+            <div style="
+                display: flex;
+                gap: 6px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-top: 18px;
+                width: 100%;
+                max-width: 420px;
+            ">
+                <div id="ratingRowUnacceptable" class="rating-pill">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; flex-shrink: 0;"></span>
+                    <span>1–19% Unacceptable</span>
+                </div>
+
+                <div id="ratingRowLimited" class="rating-pill">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #f97316; flex-shrink: 0;"></span>
+                    <span>20–39% Limited</span>
+                </div>
+
+                <div id="ratingRowModerate" class="rating-pill">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; flex-shrink: 0;"></span>
+                    <span>40–59% Moderate</span>
+                </div>
+
+                <div id="ratingRowGood" class="rating-pill">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #0ea5e9; flex-shrink: 0;"></span>
+                    <span>60–79% Good</span>
+                </div>
+
+                <div id="ratingRowBest" class="rating-pill">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; flex-shrink: 0;"></span>
+                    <span>80–100% Best</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vertical Divider -->
+        <div class="overall-v-divider" style="
+            width: 1px;
+            height: 100%;
+            min-height: 240px;
+            background: #e2e8f0;
+        "></div>
+
+        <!-- =================================================
+             RIGHT : ANNUAL DISTRIBUTION STACKED ROW CHART
+        ================================================== -->
+        <div style="
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            min-width: 0;
+        ">
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+                flex-wrap: wrap;
+                gap: 6px;
+            ">
+                <span style="
+                    color: #065f46;
+                    font-size: 0.80rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1.2px;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                ">
+                    <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+                    Annual Score Distribution (2020–2025)
+                </span>
+                <span style="
+                    font-size: 0.70rem;
+                    color: #64748b;
+                    font-weight: 400;
+                ">
+                    สัดส่วนระดับคะแนนภาพรวมรายปี (100% Stacked Row)
+                </span>
+            </div>
+
+            <div style="
+                position: relative;
+                width: 100%;
+                height: 245px;
+            ">
+                <canvas id="distStackedChart"></canvas>
+            </div>
         </div>
 
     </div>
-
 </div>
 
 
@@ -1901,153 +1755,58 @@
 
 
                 <div class="summary-section-header">
-
-
-                    <span class="summary-section-title">
-
-                        Performance by Category
-
-                    </span>
-
-
-                    <span class="summary-section-subtitle">
-
-                        7 Environmental Categories
-
-                    </span>
-
-
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 4px; height: 18px; border-radius: 2px; background: #10b981;"></span>
+                        <span class="summary-section-title" style="font-size: 0.95rem; font-weight: 600; color: #0f172a;">Performance by Category</span>
+                    </div>
+                    <span class="summary-section-subtitle" style="font-size: 0.72rem; color: #64748b;">7 Environmental Categories</span>
                 </div>
 
-
                 <div class="table-scroll">
-
-
                     <table id="summaryTable">
-
-
                         <thead>
-
-
                             <tr>
-
-
                                 <th>
-                                    หมวด 1<br>
-                                    <small>(องค์กร)</small>
+                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; margin-right: 4px;"></span>
+                                    หมวด 1<br><small style="color: #64748b;">(องค์กร)</small>
                                 </th>
-
-
                                 <th>
-                                    หมวด 2<br>
-                                    <small>(วัตถุดิบ)</small>
+                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #0ea5e9; margin-right: 4px;"></span>
+                                    หมวด 2<br><small style="color: #64748b;">(วัตถุดิบ)</small>
                                 </th>
-
-
                                 <th>
-                                    หมวด 3<br>
-                                    <small>(พลังงาน)</small>
+                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; margin-right: 4px;"></span>
+                                    หมวด 3<br><small style="color: #64748b;">(พลังงาน)</small>
                                 </th>
-
-
                                 <th>
-                                    หมวด 4<br>
-                                    <small>(น้ำ)</small>
+                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #06b6d4; margin-right: 4px;"></span>
+                                    หมวด 4<br><small style="color: #64748b;">(น้ำ)</small>
                                 </th>
-
-
                                 <th>
-                                    หมวด 5<br>
-                                    <small>(กากของเสีย)</small>
+                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #8b5cf6; margin-right: 4px;"></span>
+                                    หมวด 5<br><small style="color: #64748b;">(กากของเสีย)</small>
                                 </th>
-
-
                                 <th>
-                                    หมวด 6<br>
-                                    <small>(อาคาร)</small>
+                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f97316; margin-right: 4px;"></span>
+                                    หมวด 6<br><small style="color: #64748b;">(อาคาร)</small>
                                 </th>
-
-
                                 <th>
-                                    หมวด 7<br>
-                                    <small>(GHG)</small>
+                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #14b8a6; margin-right: 4px;"></span>
+                                    หมวด 7<br><small style="color: #64748b;">(GHG)</small>
                                 </th>
-
-
                             </tr>
-
-
                         </thead>
-
-
                         <tbody>
-
-
                             <tr>
-
-
-                                <td
-                                    id="score1"
-                                    style="color:#16a34a;"
-                                >
-                                    -
-                                </td>
-
-
-                                <td
-                                    id="score2"
-                                    style="color:#0ea5e9;"
-                                >
-                                    -
-                                </td>
-
-
-                                <td
-                                    id="score3"
-                                    style="color:#f59e0b;"
-                                >
-                                    -
-                                </td>
-
-
-                                <td
-                                    id="score4"
-                                    style="color:#ef4444;"
-                                >
-                                    -
-                                </td>
-
-
-                                <td
-                                    id="score5"
-                                    style="color:#8b5cf6;"
-                                >
-                                    -
-                                </td>
-
-
-                                <td
-                                    id="score6"
-                                    style="color:#f97316;"
-                                >
-                                    -
-                                </td>
-
-
-                                <td
-                                    id="score7"
-                                    style="color:#14b8a6;"
-                                >
-                                    -
-                                </td>
-
-
+                                <td id="score1" style="color: #10b981; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score2" style="color: #0ea5e9; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score3" style="color: #f59e0b; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score4" style="color: #06b6d4; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score5" style="color: #8b5cf6; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score6" style="color: #f97316; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score7" style="color: #14b8a6; font-size: 1.05rem; font-weight: 700;">-</td>
                             </tr>
-
-
                         </tbody>
-
-
                     </table>
 
 
@@ -2058,40 +1817,23 @@
 
 
             <!-- =================================================
-                 PIE CHART
+                 RADAR CHART (INTERACTIVE BOUNCE & EXPAND)
                  ================================================= -->
 
             <div class="pie-section">
 
-
                 <div class="pie-header">
-
-
                     <h3>
-
-                        สัดส่วนรายละเอียดรายหน่วยงาน
-
+                        <span style="display:inline-block; width:4px; height:18px; border-radius:2px; background:#10b981;"></span>
+                        สัดส่วนรายละเอียดรายหมวด (Radar Chart)
                     </h3>
-
-
-                    <span>
-
-                        Category Performance Distribution
-
-                    </span>
-
-
                 </div>
 
-
-                <div class="chart-wrapper">
-
-
-                    <canvas id="pieChart"></canvas>
-
-
+                <div id="radarCardWrapper" class="radar-card-interactive" title="คลิกหรือชี้เมาส์เพื่อขยายดูกราฟ">
+                    <div class="chart-wrapper">
+                        <canvas id="pieChart"></canvas>
+                    </div>
                 </div>
-
 
             </div>
 
@@ -2125,7 +1867,6 @@
      ========================================================= -->
 
 <script src="script.js"></script>
-```
 
 </body>
 

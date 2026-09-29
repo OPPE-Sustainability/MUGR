@@ -82,35 +82,35 @@ const ratingLevels = [
         min: 0,
         max: 20,
         text: 'Unacceptable',
-        color: '#c0392b'
+        color: '#ef4444'
     },
     {
         id: 'ratingRowLimited',
         min: 20,
         max: 40,
         text: 'Limited',
-        color: '#d35400'
+        color: '#f97316'
     },
     {
         id: 'ratingRowModerate',
         min: 40,
         max: 60,
         text: 'Moderate',
-        color: '#f39c12'
+        color: '#f59e0b'
     },
     {
         id: 'ratingRowGood',
         min: 60,
         max: 80,
         text: 'Good',
-        color: '#2980b9'
+        color: '#0ea5e9'
     },
     {
         id: 'ratingRowBest',
         min: 80,
         max: 100,
         text: 'Best',
-        color: '#27ae60'
+        color: '#10b981'
     }
 ];
 
@@ -140,34 +140,34 @@ function getRatingRank(score) {
     if (score >= 80) {
         return {
             text: 'Best',
-            color: '#27ae60'
+            color: '#10b981'
         };
     }
 
     if (score >= 60) {
         return {
             text: 'Good',
-            color: '#2980b9'
+            color: '#0ea5e9'
         };
     }
 
     if (score >= 40) {
         return {
             text: 'Moderate',
-            color: '#f39c12'
+            color: '#f59e0b'
         };
     }
 
     if (score >= 20) {
         return {
             text: 'Limited',
-            color: '#d35400'
+            color: '#f97316'
         };
     }
 
     return {
         text: 'Unacceptable',
-        color: '#c0392b'
+        color: '#ef4444'
     };
 }
 
@@ -179,15 +179,16 @@ function getRatingRank(score) {
 function updateRatingScale(score) {
     score = normalizeScore(score);
 
-    // Reset all rows
+    // Reset all rating pills
     ratingLevels.forEach(level => {
         const row = document.getElementById(level.id);
 
         if (!row) return;
 
-        row.style.background = 'transparent';
-        row.style.borderLeft = '3px solid transparent';
-        row.style.boxShadow = 'none';
+        row.style.background = '#ffffff';
+        row.style.border = '1px solid #e2e8f0';
+        row.style.color = '#64748b';
+        row.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.02)';
         row.style.fontWeight = '400';
     });
 
@@ -205,17 +206,179 @@ function updateRatingScale(score) {
 
     if (!currentRow) return;
 
-    // Highlight active rating
+    // Highlight active rating pill
     currentRow.style.background =
-        `${currentLevel.color}25`;
+        `${currentLevel.color}15`;
 
-    currentRow.style.borderLeft =
-        `3px solid ${currentLevel.color}`;
+    currentRow.style.border =
+        `1px solid ${currentLevel.color}`;
+
+    currentRow.style.color = currentLevel.color;
 
     currentRow.style.boxShadow =
-        `inset 0 0 18px ${currentLevel.color}15`;
+        `0 2px 8px ${currentLevel.color}30`;
 
-    currentRow.style.fontWeight = '700';
+    currentRow.style.fontWeight = '600';
+}
+
+
+// ======================================================
+// UPDATE ANNUAL DISTRIBUTION STACKED ROW CHART
+// ======================================================
+
+const annualDistributionYears = ['2020', '2021', '2022', '2023', '2024', '2025'];
+
+function updateAnnualStackedChart(selectedYear = '2025') {
+    const canvas =
+        document.getElementById('distStackedChart');
+
+    if (!canvas) {
+        console.warn('Stacked canvas #distStackedChart not found');
+        return;
+    }
+
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js is not loaded');
+        return;
+    }
+
+    const selectedYearStr = String(selectedYear || '2025');
+
+    // Destroy existing instance
+    if (window.distStackedInstance) {
+        window.distStackedInstance.destroy();
+        window.distStackedInstance = null;
+    }
+
+    window.distStackedInstance = new Chart(
+        canvas.getContext('2d'),
+        {
+            type: 'bar',
+            data: {
+                labels: annualDistributionYears,
+                datasets: [
+                    {
+                        label: 'Best (80–100%)',
+                        data: [12.82, 23.08, 12.82, 10.53, 23.68, 24.32],
+                        backgroundColor: '#10b981',
+                        hoverBackgroundColor: '#059669',
+                        borderRadius: { topLeft: 4, bottomLeft: 4 },
+                        borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
+                        borderColor: '#0f172a'
+                    },
+                    {
+                        label: 'Good (60–79%)',
+                        data: [35.90, 23.08, 33.33, 26.32, 21.05, 40.54],
+                        backgroundColor: '#0ea5e9',
+                        hoverBackgroundColor: '#0284c7',
+                        borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
+                        borderColor: '#0f172a'
+                    },
+                    {
+                        label: 'Moderate (40–59%)',
+                        data: [28.21, 33.33, 28.21, 31.58, 34.21, 27.03],
+                        backgroundColor: '#f59e0b',
+                        hoverBackgroundColor: '#d97706',
+                        borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
+                        borderColor: '#0f172a'
+                    },
+                    {
+                        label: 'Limited (20–39%)',
+                        data: [20.51, 7.69, 20.51, 23.68, 15.79, 2.70],
+                        backgroundColor: '#f97316',
+                        hoverBackgroundColor: '#ea580c',
+                        borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
+                        borderColor: '#0f172a'
+                    },
+                    {
+                        label: 'Unacceptable (1–19%)',
+                        data: [2.56, 12.82, 5.13, 7.89, 5.26, 5.41],
+                        backgroundColor: '#ef4444',
+                        hoverBackgroundColor: '#dc2626',
+                        borderRadius: { topRight: 4, bottomRight: 4 },
+                        borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
+                        borderColor: '#0f172a'
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                barThickness: 16,
+                maxBarThickness: 20,
+                scales: {
+                    x: {
+                        stacked: true,
+                        min: 0,
+                        max: 100,
+                        grid: {
+                            color: '#e2e8f0'
+                        },
+                        ticks: {
+                            color: '#64748b',
+                            font: { family: 'Prompt', size: 10 },
+                            callback: value => value + '%'
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: c => {
+                                const yr = annualDistributionYears[c.index];
+                                return yr === selectedYearStr ? '#059669' : '#64748b';
+                            },
+                            font: c => {
+                                const yr = annualDistributionYears[c.index];
+                                const isCurrent = (yr === selectedYearStr);
+                                return {
+                                    family: 'Prompt',
+                                    size: isCurrent ? 12 : 11,
+                                    weight: isCurrent ? '700' : '500'
+                                };
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            color: '#475569',
+                            font: { family: 'Prompt', size: 10 },
+                            boxWidth: 8,
+                            boxHeight: 8,
+                            padding: 8,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#e2e8f0',
+                        borderColor: '#10b981',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 8,
+                        titleFont: { family: 'Prompt', size: 11, weight: '600' },
+                        bodyFont: { family: 'Prompt', size: 11 },
+                        callbacks: {
+                            label: context => {
+                                const label = context.dataset.label || '';
+                                const val = Number(context.parsed.x || 0);
+                                return ` ${label}: ${val.toFixed(2)}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    );
 }
 
 
@@ -259,7 +422,7 @@ function updateGaugeChart(score, rating) {
 
                     backgroundColor: [
                         rating.color,
-                        'rgba(255,255,255,0.16)'
+                        '#e2e8f0'
                     ],
 
                     borderWidth: 0,
@@ -339,50 +502,90 @@ function updateRadarChart(scores) {
                 datasets: [{
                     label: 'คะแนนแต่ละหมวด',
                     data: scores,
-
-                    backgroundColor:
-                        'rgba(39, 174, 96, 0.25)',
-
-                    borderColor: '#27ae60',
-                    borderWidth: 2,
-
-                    pointBackgroundColor: '#27ae60',
+                    backgroundColor: 'rgba(16, 185, 129, 0.22)',
+                    borderColor: '#10b981',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#10b981',
                     pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4.5,
+                    pointHoverRadius: 9,
                     pointHoverBackgroundColor: '#ffffff',
-                    pointHoverBorderColor: '#27ae60'
+                    pointHoverBorderColor: '#10b981',
+                    pointHoverBorderWidth: 3
                 }]
             },
 
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 750,
+                    easing: 'easeOutQuart'
+                },
 
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(16, 185, 129, 0.35)',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 8,
+                        titleFont: {
+                            family: 'Prompt',
+                            size: 12,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            family: 'Prompt',
+                            size: 11
+                        },
+                        callbacks: {
+                            label: context => {
+                                const val = Number(context.raw || 0);
+                                return ` คะแนน: ${val.toFixed(2)} / 100`;
+                            }
+                        }
                     }
                 },
 
                 scales: {
                     r: {
                         beginAtZero: true,
+                        min: 0,
                         max: 100,
 
                         ticks: {
+                            stepSize: 20,
                             font: {
                                 family: 'Prompt',
                                 size: 10
-                            }
+                            },
+                            color: '#94a3b8',
+                            backdropColor: 'transparent'
+                        },
+
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.22)',
+                            circular: false
+                        },
+
+                        angleLines: {
+                            color: 'rgba(148, 163, 184, 0.22)'
                         },
 
                         pointLabels: {
                             font: {
                                 family: 'Prompt',
-                                size: 11,
-                                weight: '500'
+                                size: 11.5,
+                                weight: '600'
                             },
-
-                            color: '#2c3e50'
+                            color: '#1e293b'
                         }
                     }
                 }
@@ -510,10 +713,11 @@ function updateDashboard(index, rawData, selectedYear) {
 
 
     // --------------------------------------------------
-    // UPDATE RATING SCALE
+    // UPDATE RATING SCALE & ANNUAL DISTRIBUTION
     // --------------------------------------------------
 
     updateRatingScale(score);
+    updateAnnualStackedChart(selectedYear);
 
 
     // --------------------------------------------------
@@ -543,6 +747,8 @@ function updateDashboard(index, rawData, selectedYear) {
 // ======================================================
 
 async function loadCharts(selectedYear = '2025') {
+    updateAnnualStackedChart(selectedYear);
+
     if (!myToken) {
         alert('กรุณาระบุ Token ใน URL (เช่น ?token=OPNA123)');
         return;
@@ -661,12 +867,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const yearSelect =
         document.getElementById('yearSelect');
 
+    const initialYear = yearSelect ? (yearSelect.value || '2025') : '2025';
+    updateAnnualStackedChart(initialYear);
+
+    // Interactive Radar Card bounce on click/touch
+    const radarCard = document.getElementById('radarCardWrapper');
+    if (radarCard) {
+        radarCard.addEventListener('click', () => {
+            radarCard.classList.toggle('is-popped');
+            if (window.pieInstance) {
+                window.pieInstance.render();
+            }
+        });
+    }
+
     if (yearSelect) {
         yearSelect.addEventListener('change', event => {
             loadCharts(event.target.value);
         });
 
-        loadCharts(yearSelect.value || '2025');
+        loadCharts(initialYear);
     } else {
         loadCharts('2025');
     }
