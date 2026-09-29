@@ -837,88 +837,260 @@
     }
 
 
-    .table-scroll {
+    /* =========================================================
+       CATEGORY TABLE WITH CUTE POPUP ICONS
+       ========================================================= */
 
-        width: 100%;
-
-        overflow-x: auto;
-
-        border-radius: 11px;
-
-        border: 1px solid #e2e8f0;
+    .summary-section {
+        margin-bottom: 25px;
     }
 
+    .summary-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .summary-section-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .summary-section-subtitle {
+        color: #64748b;
+        font-size: 0.72rem;
+    }
+
+    .table-scroll {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        position: relative;
+    }
+
+    @media (min-width: 860px) {
+        .table-scroll {
+            overflow: visible !important;
+        }
+    }
 
     #summaryTable {
-
         width: 100%;
-
         min-width: 800px;
-
         border-collapse: collapse;
-
         text-align: center;
-
         font-size: 0.78rem;
     }
 
-
     #summaryTable th {
-
-        padding: 9px 7px;
-
-        background:
-            #f8fafc;
-
+        position: relative;
+        padding: 13px 6px;
+        background: #f8fafc;
         color: #475569;
-
-        border-right:
-            1px solid #e2e8f0;
-
-        border-bottom:
-            1px solid #e2e8f0;
-
+        border-right: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
         font-weight: 600;
+        white-space: nowrap;
+        transition: background-color 0.25s ease;
+    }
 
+    #summaryTable th:last-child {
+        border-right: none;
+    }
+
+    #summaryTable td {
+        position: relative;
+        padding: 13px 6px;
+        background: #ffffff;
+        border-right: 1px solid #edf2f7;
+        color: #334155;
+        font-weight: 600;
+        transition: background-color 0.25s ease, transform 0.25s ease;
+    }
+
+    #summaryTable td:last-child {
+        border-right: none;
+    }
+
+    /* Column Hover Linkage */
+    .cat-col {
+        cursor: pointer;
+    }
+
+    .cat-col.is-hovered,
+    .cat-col:hover {
+        background: #f1f5f9 !important;
+    }
+
+    /* Highlight hovered score */
+    #summaryTable tr td.cat-col.is-hovered,
+    #summaryTable tr td.cat-col:hover {
+        transform: scale(1.1);
+        z-index: 5;
+    }
+
+    /* =========================================================
+       CUTE POP-UP BUBBLE STYLES
+       ========================================================= */
+
+    .cat-popup-bubble {
+        position: absolute;
+        bottom: calc(100% + 14px);
+        left: 50%;
+        transform: translateX(-50%) translateY(12px) scale(0.75);
+        opacity: 0;
+        visibility: hidden;
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 10px 14px 8px;
+        min-width: 140px;
+        box-shadow: 0 14px 30px -4px rgba(15, 23, 42, 0.16),
+                    0 4px 10px -2px rgba(15, 23, 42, 0.06);
+        pointer-events: none;
+        z-index: 100;
+        transition: opacity 0.45s ease,
+                    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    visibility 0.45s ease;
+        text-align: center;
+        border: 1.5px solid #e2e8f0;
+    }
+
+    /* Show on Hover */
+    .cat-col.is-hovered .cat-popup-bubble,
+    .cat-col:hover .cat-popup-bubble {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0) scale(1);
+        pointer-events: auto;
+    }
+
+    .cat-popup-arrow {
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+        width: 10px;
+        height: 10px;
+        background: #ffffff;
+        border-right: 1.5px solid #e2e8f0;
+        border-bottom: 1.5px solid #e2e8f0;
+    }
+
+    .cat-popup-icon-wrap {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        margin: 0 auto 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cat-icon-emoji {
+        font-size: 1.65rem;
+        line-height: 1;
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+
+    /* Smooth cute bounce */
+    .cat-col.is-hovered .cat-icon-emoji,
+    .cat-col:hover .cat-icon-emoji {
+        animation: cuteIconWobble 2.2s ease-in-out infinite;
+    }
+
+    @keyframes cuteIconWobble {
+        0%, 100% {
+            transform: translateY(0) scale(1) rotate(0deg);
+        }
+        25% {
+            transform: translateY(-5px) scale(1.12) rotate(-4deg);
+        }
+        50% {
+            transform: translateY(-1px) scale(1.05) rotate(4deg);
+        }
+        75% {
+            transform: translateY(-4px) scale(1.1) rotate(-2deg);
+        }
+    }
+
+    /* Special smooth ripple effect for Water Droplet (หมวด 4) */
+    .icon-water {
+        animation: waterDropFloat 2s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes waterDropFloat {
+        0% {
+            transform: translateY(1px) scale(0.98);
+            filter: drop-shadow(0 2px 4px rgba(6, 182, 212, 0.25));
+        }
+        100% {
+            transform: translateY(-6px) scale(1.15);
+            filter: drop-shadow(0 6px 12px rgba(6, 182, 212, 0.45));
+        }
+    }
+
+    .cat-popup-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+        margin-bottom: 2px;
         white-space: nowrap;
     }
 
-
-    #summaryTable th:last-child {
-
-        border-right: none;
+    .cat-popup-sub {
+        font-size: 0.60rem;
+        color: #64748b;
+        margin-bottom: 5px;
+        white-space: nowrap;
     }
 
-
-    #summaryTable td {
-
-        padding: 10px 7px;
-
-        background: #ffffff;
-
-        border-right:
-            1px solid #edf2f7;
-
-        color: #334155;
-
+    .cat-popup-score {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: #f1f5f9;
+        font-size: 0.68rem;
         font-weight: 600;
-
-        transition:
-            background 0.2s ease;
+        color: #0f172a;
+        white-space: nowrap;
     }
 
+    /* Themes per Category */
+    .bubble-cat-1 { border-color: #a7f3d0; }
+    .bubble-cat-1 .cat-popup-arrow { border-right-color: #a7f3d0; border-bottom-color: #a7f3d0; }
+    .bg-cat-1 { background: #ecfdf5; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.22); }
 
-    #summaryTable td:last-child {
+    .bubble-cat-2 { border-color: #bae6fd; }
+    .bubble-cat-2 .cat-popup-arrow { border-right-color: #bae6fd; border-bottom-color: #bae6fd; }
+    .bg-cat-2 { background: #e0f2fe; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.22); }
 
-        border-right: none;
-    }
+    .bubble-cat-3 { border-color: #fde68a; }
+    .bubble-cat-3 .cat-popup-arrow { border-right-color: #fde68a; border-bottom-color: #fde68a; }
+    .bg-cat-3 { background: #fef3c7; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.22); }
 
+    .bubble-cat-4 { border-color: #a5f3fc; }
+    .bubble-cat-4 .cat-popup-arrow { border-right-color: #a5f3fc; border-bottom-color: #a5f3fc; }
+    .bg-cat-4 { background: #cffafe; box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3); }
 
-    #summaryTable tbody tr:hover td {
+    .bubble-cat-5 { border-color: #e9d5ff; }
+    .bubble-cat-5 .cat-popup-arrow { border-right-color: #e9d5ff; border-bottom-color: #e9d5ff; }
+    .bg-cat-5 { background: #f3e8ff; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.22); }
 
-        background:
-            #f8fafc;
-    }
+    .bubble-cat-6 { border-color: #fed7aa; }
+    .bubble-cat-6 .cat-popup-arrow { border-right-color: #fed7aa; border-bottom-color: #fed7aa; }
+    .bg-cat-6 { background: #ffedd5; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.22); }
+
+    .bubble-cat-7 { border-color: #99f6e4; }
+    .bubble-cat-7 .cat-popup-arrow { border-right-color: #99f6e4; border-bottom-color: #99f6e4; }
+    .bg-cat-7 { background: #ccfbf1; box-shadow: 0 4px 12px rgba(20, 184, 166, 0.22); }
 
 
     /* =========================================================
@@ -1755,54 +1927,137 @@
                 <div class="summary-section-header">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="display: inline-block; width: 4px; height: 18px; border-radius: 2px; background: #10b981;"></span>
-                        <span class="summary-section-title" style="font-size: 0.95rem; font-weight: 600; color: #0f172a;">Performance by Category</span>
+                        <span class="summary-section-title">Performance by Category</span>
                     </div>
-                    <span class="summary-section-subtitle" style="font-size: 0.72rem; color: #64748b;">7 Environmental Categories</span>
+
                 </div>
 
                 <div class="table-scroll">
                     <table id="summaryTable">
                         <thead>
                             <tr>
-                                <th>
-                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; margin-right: 4px;"></span>
-                                    หมวด 1<br><small style="color: #64748b;">(องค์กร)</small>
+                                <th class="cat-col" data-cat="1">
+                                    <div class="cat-popup-bubble bubble-cat-1">
+                                        <div class="cat-popup-icon-wrap bg-cat-1">
+                                            <span class="cat-icon-emoji">🏛️</span>
+                                        </div>
+                                        <div class="cat-popup-title">หมวด 1: องค์กร</div>
+                                        <div class="cat-popup-sub">Organization & Governance</div>
+                                        <div class="cat-popup-score">คะแนน: <span id="popupScore1">-</span></div>
+                                        <div class="cat-popup-arrow"></div>
+                                    </div>
+                                    <div class="cat-header-inner">
+                                        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; margin-right: 4px;"></span>
+                                        หมวด 1<br><small style="color: #64748b;">(องค์กร)</small>
+                                    </div>
                                 </th>
-                                <th>
-                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #0ea5e9; margin-right: 4px;"></span>
-                                    หมวด 2<br><small style="color: #64748b;">(วัตถุดิบ)</small>
+
+                                <th class="cat-col" data-cat="2">
+                                    <div class="cat-popup-bubble bubble-cat-2">
+                                        <div class="cat-popup-icon-wrap bg-cat-2">
+                                            <span class="cat-icon-emoji">📦</span>
+                                        </div>
+                                        <div class="cat-popup-title">หมวด 2: วัตถุดิบ</div>
+                                        <div class="cat-popup-sub">Materials & Resources</div>
+                                        <div class="cat-popup-score">คะแนน: <span id="popupScore2">-</span></div>
+                                        <div class="cat-popup-arrow"></div>
+                                    </div>
+                                    <div class="cat-header-inner">
+                                        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #0ea5e9; margin-right: 4px;"></span>
+                                        หมวด 2<br><small style="color: #64748b;">(วัตถุดิบ)</small>
+                                    </div>
                                 </th>
-                                <th>
-                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; margin-right: 4px;"></span>
-                                    หมวด 3<br><small style="color: #64748b;">(พลังงาน)</small>
+
+                                <th class="cat-col" data-cat="3">
+                                    <div class="cat-popup-bubble bubble-cat-3">
+                                        <div class="cat-popup-icon-wrap bg-cat-3">
+                                            <span class="cat-icon-emoji">⚡</span>
+                                        </div>
+                                        <div class="cat-popup-title">หมวด 3: พลังงาน</div>
+                                        <div class="cat-popup-sub">Energy & Efficiency</div>
+                                        <div class="cat-popup-score">คะแนน: <span id="popupScore3">-</span></div>
+                                        <div class="cat-popup-arrow"></div>
+                                    </div>
+                                    <div class="cat-header-inner">
+                                        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; margin-right: 4px;"></span>
+                                        หมวด 3<br><small style="color: #64748b;">(พลังงาน)</small>
+                                    </div>
                                 </th>
-                                <th>
-                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #06b6d4; margin-right: 4px;"></span>
-                                    หมวด 4<br><small style="color: #64748b;">(น้ำ)</small>
+
+                                <th class="cat-col" data-cat="4">
+                                    <div class="cat-popup-bubble bubble-cat-4">
+                                        <div class="cat-popup-icon-wrap bg-cat-4">
+                                            <span class="cat-icon-emoji icon-water">💧</span>
+                                        </div>
+                                        <div class="cat-popup-title">หมวด 4: น้ำ</div>
+                                        <div class="cat-popup-sub">Water Conservation</div>
+                                        <div class="cat-popup-score">คะแนน: <span id="popupScore4">-</span></div>
+                                        <div class="cat-popup-arrow"></div>
+                                    </div>
+                                    <div class="cat-header-inner">
+                                        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #06b6d4; margin-right: 4px;"></span>
+                                        หมวด 4<br><small style="color: #64748b;">(น้ำ)</small>
+                                    </div>
                                 </th>
-                                <th>
-                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #8b5cf6; margin-right: 4px;"></span>
-                                    หมวด 5<br><small style="color: #64748b;">(กากของเสีย)</small>
+
+                                <th class="cat-col" data-cat="5">
+                                    <div class="cat-popup-bubble bubble-cat-5">
+                                        <div class="cat-popup-icon-wrap bg-cat-5">
+                                            <span class="cat-icon-emoji">♻️</span>
+                                        </div>
+                                        <div class="cat-popup-title">หมวด 5: กากของเสีย</div>
+                                        <div class="cat-popup-sub">Waste & 3R Management</div>
+                                        <div class="cat-popup-score">คะแนน: <span id="popupScore5">-</span></div>
+                                        <div class="cat-popup-arrow"></div>
+                                    </div>
+                                    <div class="cat-header-inner">
+                                        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #8b5cf6; margin-right: 4px;"></span>
+                                        หมวด 5<br><small style="color: #64748b;">(กากของเสีย)</small>
+                                    </div>
                                 </th>
-                                <th>
-                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f97316; margin-right: 4px;"></span>
-                                    หมวด 6<br><small style="color: #64748b;">(อาคาร)</small>
+
+                                <th class="cat-col" data-cat="6">
+                                    <div class="cat-popup-bubble bubble-cat-6">
+                                        <div class="cat-popup-icon-wrap bg-cat-6">
+                                            <span class="cat-icon-emoji">🏡</span>
+                                        </div>
+                                        <div class="cat-popup-title">หมวด 6: อาคาร</div>
+                                        <div class="cat-popup-sub">Green Building & Indoor</div>
+                                        <div class="cat-popup-score">คะแนน: <span id="popupScore6">-</span></div>
+                                        <div class="cat-popup-arrow"></div>
+                                    </div>
+                                    <div class="cat-header-inner">
+                                        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f97316; margin-right: 4px;"></span>
+                                        หมวด 6<br><small style="color: #64748b;">(อาคาร)</small>
+                                    </div>
                                 </th>
-                                <th>
-                                    <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #14b8a6; margin-right: 4px;"></span>
-                                    หมวด 7<br><small style="color: #64748b;">(GHG)</small>
+
+                                <th class="cat-col" data-cat="7">
+                                    <div class="cat-popup-bubble bubble-cat-7">
+                                        <div class="cat-popup-icon-wrap bg-cat-7">
+                                            <span class="cat-icon-emoji">🌍</span>
+                                        </div>
+                                        <div class="cat-popup-title">หมวด 7: GHG</div>
+                                        <div class="cat-popup-sub">Greenhouse Gas & Carbon</div>
+                                        <div class="cat-popup-score">คะแนน: <span id="popupScore7">-</span></div>
+                                        <div class="cat-popup-arrow"></div>
+                                    </div>
+                                    <div class="cat-header-inner">
+                                        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #14b8a6; margin-right: 4px;"></span>
+                                        หมวด 7<br><small style="color: #64748b;">(GHG)</small>
+                                    </div>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td id="score1" style="color: #10b981; font-size: 1.05rem; font-weight: 700;">-</td>
-                                <td id="score2" style="color: #0ea5e9; font-size: 1.05rem; font-weight: 700;">-</td>
-                                <td id="score3" style="color: #f59e0b; font-size: 1.05rem; font-weight: 700;">-</td>
-                                <td id="score4" style="color: #06b6d4; font-size: 1.05rem; font-weight: 700;">-</td>
-                                <td id="score5" style="color: #8b5cf6; font-size: 1.05rem; font-weight: 700;">-</td>
-                                <td id="score6" style="color: #f97316; font-size: 1.05rem; font-weight: 700;">-</td>
-                                <td id="score7" style="color: #14b8a6; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score1" class="cat-col" data-cat="1" style="color: #10b981; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score2" class="cat-col" data-cat="2" style="color: #0ea5e9; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score3" class="cat-col" data-cat="3" style="color: #f59e0b; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score4" class="cat-col" data-cat="4" style="color: #06b6d4; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score5" class="cat-col" data-cat="5" style="color: #8b5cf6; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score6" class="cat-col" data-cat="6" style="color: #f97316; font-size: 1.05rem; font-weight: 700;">-</td>
+                                <td id="score7" class="cat-col" data-cat="7" style="color: #14b8a6; font-size: 1.05rem; font-weight: 700;">-</td>
                             </tr>
                         </tbody>
                     </table>

@@ -603,8 +603,8 @@ function updateCategoryScores(details) {
     for (let i = 1; i <= 7; i++) {
         const element =
             document.getElementById(`score${i}`);
-
-        if (!element) continue;
+        const popupElement =
+            document.getElementById(`popupScore${i}`);
 
         const value = details[i - 1];
 
@@ -614,16 +614,20 @@ function updateCategoryScores(details) {
             value === null ||
             value === undefined
         ) {
-            element.textContent = '-';
+            if (element) element.textContent = '-';
+            if (popupElement) popupElement.textContent = '-';
             continue;
         }
 
         const number = Number(value);
+        const textVal = Number.isFinite(number) ? number.toFixed(2) : '-';
 
-        element.textContent =
-            Number.isFinite(number)
-                ? number.toFixed(2)
-                : '-';
+        if (element) {
+            element.textContent = textVal;
+        }
+        if (popupElement) {
+            popupElement.textContent = Number.isFinite(number) ? `${textVal} / 100` : '-';
+        }
     }
 }
 
@@ -880,6 +884,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Interactive Category Table Pop-Up linkage for Header and Score cells
+    const catCells = document.querySelectorAll('#summaryTable .cat-col');
+    catCells.forEach(cell => {
+        const catId = cell.getAttribute('data-cat');
+        if (!catId) return;
+
+        cell.addEventListener('mouseenter', () => {
+            document.querySelectorAll(`#summaryTable .cat-col[data-cat="${catId}"]`).forEach(colEl => {
+                colEl.classList.add('is-hovered');
+            });
+        });
+
+        cell.addEventListener('mouseleave', () => {
+            document.querySelectorAll(`#summaryTable .cat-col[data-cat="${catId}"]`).forEach(colEl => {
+                colEl.classList.remove('is-hovered');
+            });
+        });
+    });
 
     if (yearSelect) {
         yearSelect.addEventListener('change', event => {
