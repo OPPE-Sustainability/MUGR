@@ -82,35 +82,40 @@ const ratingLevels = [
         min: 0,
         max: 20,
         text: 'Unacceptable',
-        color: '#ef4444'
+        color: '#ff0000',
+        textColor: '#ffffff'
     },
     {
         id: 'ratingRowLimited',
         min: 20,
         max: 40,
         text: 'Limited',
-        color: '#f97316'
+        color: '#f37021',
+        textColor: '#ffffff'
     },
     {
         id: 'ratingRowModerate',
         min: 40,
         max: 60,
         text: 'Moderate',
-        color: '#f59e0b'
+        color: '#ffc000',
+        textColor: '#0f172a'
     },
     {
         id: 'ratingRowGood',
         min: 60,
         max: 80,
         text: 'Good',
-        color: '#0ea5e9'
+        color: '#92d050',
+        textColor: '#0f172a'
     },
     {
         id: 'ratingRowBest',
         min: 80,
         max: 100,
         text: 'Best',
-        color: '#10b981'
+        color: '#00b050',
+        textColor: '#ffffff'
     }
 ];
 
@@ -140,34 +145,39 @@ function getRatingRank(score) {
     if (score >= 80) {
         return {
             text: 'Best',
-            color: '#10b981'
+            color: '#00b050',
+            textColor: '#ffffff'
         };
     }
 
     if (score >= 60) {
         return {
             text: 'Good',
-            color: '#0ea5e9'
+            color: '#92d050',
+            textColor: '#0f172a'
         };
     }
 
     if (score >= 40) {
         return {
             text: 'Moderate',
-            color: '#f59e0b'
+            color: '#ffc000',
+            textColor: '#0f172a'
         };
     }
 
     if (score >= 20) {
         return {
             text: 'Limited',
-            color: '#f97316'
+            color: '#f37021',
+            textColor: '#ffffff'
         };
     }
 
     return {
         text: 'Unacceptable',
-        color: '#ef4444'
+        color: '#ff0000',
+        textColor: '#ffffff'
     };
 }
 
@@ -208,17 +218,18 @@ function updateRatingScale(score) {
 
     // Highlight active rating pill
     currentRow.style.background =
-        `${currentLevel.color}15`;
+        `${currentLevel.color}20`;
 
     currentRow.style.border =
-        `1px solid ${currentLevel.color}`;
+        `1.5px solid ${currentLevel.color}`;
 
-    currentRow.style.color = currentLevel.color;
+    currentRow.style.color =
+        currentLevel.textColor === '#0f172a' ? '#0f172a' : currentLevel.color;
 
     currentRow.style.boxShadow =
-        `0 2px 8px ${currentLevel.color}30`;
+        `0 2px 8px ${currentLevel.color}40`;
 
-    currentRow.style.fontWeight = '600';
+    currentRow.style.fontWeight = '700';
 }
 
 
@@ -260,8 +271,8 @@ function updateAnnualStackedChart(selectedYear = '2025') {
                     {
                         label: 'Best (80–100%)',
                         data: [12.82, 23.08, 12.82, 10.53, 23.68, 24.32],
-                        backgroundColor: '#10b981',
-                        hoverBackgroundColor: '#059669',
+                        backgroundColor: '#00b050',
+                        hoverBackgroundColor: '#009443',
                         borderRadius: { topLeft: 4, bottomLeft: 4 },
                         borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
                         borderColor: '#0f172a'
@@ -269,32 +280,32 @@ function updateAnnualStackedChart(selectedYear = '2025') {
                     {
                         label: 'Good (60–79%)',
                         data: [35.90, 23.08, 33.33, 26.32, 21.05, 40.54],
-                        backgroundColor: '#0ea5e9',
-                        hoverBackgroundColor: '#0284c7',
+                        backgroundColor: '#92d050',
+                        hoverBackgroundColor: '#7dbb3e',
                         borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
                         borderColor: '#0f172a'
                     },
                     {
                         label: 'Moderate (40–59%)',
                         data: [28.21, 33.33, 28.21, 31.58, 34.21, 27.03],
-                        backgroundColor: '#f59e0b',
-                        hoverBackgroundColor: '#d97706',
+                        backgroundColor: '#ffc000',
+                        hoverBackgroundColor: '#e0a800',
                         borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
                         borderColor: '#0f172a'
                     },
                     {
                         label: 'Limited (20–39%)',
                         data: [20.51, 7.69, 20.51, 23.68, 15.79, 2.70],
-                        backgroundColor: '#f97316',
-                        hoverBackgroundColor: '#ea580c',
+                        backgroundColor: '#f37021',
+                        hoverBackgroundColor: '#d95a12',
                         borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
                         borderColor: '#0f172a'
                     },
                     {
                         label: 'Unacceptable (1–19%)',
                         data: [2.56, 12.82, 5.13, 7.89, 5.26, 5.41],
-                        backgroundColor: '#ef4444',
-                        hoverBackgroundColor: '#dc2626',
+                        backgroundColor: '#ff0000',
+                        hoverBackgroundColor: '#d60000',
                         borderRadius: { topRight: 4, bottomRight: 4 },
                         borderWidth: annualDistributionYears.map(yr => yr === selectedYearStr ? 2 : 0),
                         borderColor: '#0f172a'
@@ -713,6 +724,7 @@ function updateDashboard(index, rawData, selectedYear) {
     if (ratingBadge) {
         ratingBadge.textContent = rating.text;
         ratingBadge.style.backgroundColor = rating.color;
+        ratingBadge.style.color = rating.textColor || '#ffffff';
     }
 
 
