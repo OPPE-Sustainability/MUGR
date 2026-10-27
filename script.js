@@ -54,7 +54,9 @@ const unitNameMapping = {
     "LC": "สถาบันวิจัยภาษาและวัฒนธรรมเอเซีย (LC)",
     "DC": "สถาบันวิทยาศาสตร์การวิเคราะห์และตรวจสารในการกีฬา (DC)",
     "OP": "สำนักงานอธิการบดี (OP)",
-    "LI": "หอสมุดและคลังความรู้มหาวิทยาลัยมหิดล"
+    "OPHP": "สถาบันสิทธิมนุษยชนและสันติศึกษา (OPHP)",
+    "IHRP": "สถาบันสิทธิมนุษยชนและสันติศึกษา (IHRP)",
+    "LI": "หอสมุดและคลังความรู้มหาวิทยาลัยมหิดล (LI)"
 };
 
 
@@ -762,8 +764,10 @@ function updateDashboard(index, rawData, selectedYear) {
 // LOAD CHARTS FROM API
 // ======================================================
 
+let currentLoadedYear = '2025';
+
 async function loadCharts(selectedYear = '2025') {
-    updateAnnualStackedChart(selectedYear);
+    const targetYearStr = String(selectedYear || '2025');
 
     if (!myToken) {
         alert('กรุณาระบุ Token ใน URL (เช่น ?token=OPNA123)');
@@ -786,7 +790,7 @@ async function loadCharts(selectedYear = '2025') {
 
     try {
         const apiUrl =
-            `${baseUrl}?year=${encodeURIComponent(selectedYear)}&token=${encodeURIComponent(myToken)}`;
+            `${baseUrl}?year=${encodeURIComponent(targetYearStr)}&token=${encodeURIComponent(myToken)}`;
 
         const response = await fetch(apiUrl);
 
@@ -805,10 +809,12 @@ async function loadCharts(selectedYear = '2025') {
         const rawData = result.data;
 
         if (!Array.isArray(rawData) || rawData.length === 0) {
-            alert(`ไม่พบข้อมูลของหน่วยงานนี้ในปี ${selectedYear}`);
-            return;
+            throw new Error(`ไม่พบข้อมูลของหน่วยงานนี้ในปี ${targetYearStr}`);
         }
 
+        // อัปเดตปีที่โหลดข้อมูลสำเร็จ
+        currentLoadedYear = targetYearStr;
+        updateAnnualStackedChart(currentLoadedYear);
 
         // --------------------------------------------------
         // POPULATE UNIT SELECT
@@ -835,7 +841,7 @@ async function loadCharts(selectedYear = '2025') {
                 updateDashboard(
                     Number(event.target.value),
                     rawData,
-                    selectedYear
+                    currentLoadedYear
                 );
             };
         }
@@ -846,7 +852,7 @@ async function loadCharts(selectedYear = '2025') {
         // --------------------------------------------------
 
         if (yearSelect) {
-            yearSelect.value = String(selectedYear);
+            yearSelect.value = currentLoadedYear;
         }
 
 
@@ -854,14 +860,27 @@ async function loadCharts(selectedYear = '2025') {
         // INITIAL DASHBOARD
         // --------------------------------------------------
 
-        updateDashboard(0, rawData, selectedYear);
+        updateDashboard(0, rawData, currentLoadedYear);
 
     } catch (error) {
         console.error('Error loading dashboard:', error);
 
-        alert(
-            'เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาตรวจสอบ API และการเชื่อมต่อ'
-        );
+        // ย้อนกลับค่าปีใน Dropdown และ Stacked Chart ไปยังปีล่าสุดที่โหลดสำเร็จ
+        if (yearSelect) {
+            yearSelect.value = currentLoadedYear;
+        }
+        updateAnnualStackedChart(currentLoadedYear);
+
+        const errorMsg = error.message || '';
+        if (errorMsg.includes('ไม่พบชีท') || errorMsg.includes('ไม่พบข้อมูล')) {
+            alert(
+                `ไม่พบข้อมูลของปี ${targetYearStr} ในระบบ Google Sheets (${errorMsg})\n\nระบบจะย้อนกลับไปแสดงข้อมูลปี ${currentLoadedYear}`
+            );
+        } else {
+            alert(
+                errorMsg ? `เกิดข้อผิดพลาด: ${errorMsg}` : 'เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาตรวจสอบ API และการเชื่อมต่อ'
+            );
+        }
 
     } finally {
         if (unitSelect) {
